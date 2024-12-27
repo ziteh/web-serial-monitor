@@ -7,12 +7,12 @@ export default function Terminal() {
       <Textarea
         readOnly
         placeholder="Received message"
-        className="w-full flex-grow h-4/5 resize-none"
+        className="w-full flex-grow h-4/5 resize-none terminal"
       />
       <div className="flex w-full gap-2 h-1/5">
         <Textarea
           placeholder="Send message"
-          className="flex-grow resize-none"
+          className="flex-grow resize-none terminal"
         />
         <Button className=" h-full">
           <svg

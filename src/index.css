@@ -26,6 +26,10 @@ body {
   min-height: 100vh;
 }
 
+.terminal {
+  font-family: "Roboto Mono", monospace;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
