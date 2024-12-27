@@ -5,6 +5,7 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import ConnectionConfig from "@/components/connection-config";
 
 export function AppSidebar() {
   return (
@@ -12,6 +13,7 @@ export function AppSidebar() {
       <SidebarHeader>Web Serial Monitor</SidebarHeader>
       <SidebarContent>
         <SidebarGroup />
+        <ConnectionConfig />
         <SidebarGroup />
       </SidebarContent>
       <SidebarFooter />
