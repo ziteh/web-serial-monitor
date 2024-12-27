@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ConfigSelect from "./config-select";
+import { Button } from "../ui/button";
 
 const baudRateItems = [
   { value: "9600", label: "9600" },
@@ -36,8 +37,35 @@ export default function ConnectionConfig() {
   const [parity, setParity] = useState("none");
   const [stopBits, setStopBits] = useState("1");
 
+  const onListPorts = async () => {
+    const port = await navigator.serial.requestPort();
+    await port.open({ baudRate: parseInt(baudRate) });
+    const writer = port.writable.getWriter();
+    await writer.write(new Uint8Array([0x01, 0x03, 0x00, 0x00, 0x00]));
+
+    const reader = port.readable.getReader();
+
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+
+        if (done) {
+          break;
+        }
+        console.log("rx:", value);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      reader.releaseLock();
+    }
+
+    await port.close();
+  };
+
   return (
     <>
+      <Button onClick={onListPorts}>List Ports</Button>
       <ConfigSelect
         value={baudRate}
         onValueChange={setBaudRate}
