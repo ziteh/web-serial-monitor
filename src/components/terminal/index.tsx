@@ -7,33 +7,33 @@ import MessageBlock from "./message-block";
 
 export default function Terminal() {
   const [port] = useState(SerialPort.getInstance());
-  const [buf, setBuf] = useState("");
-  const [tx, setTx] = useState("");
+  const [rxMessage, setRxMessage] = useState<string[]>([]);
+  const [txMessage, setTxMessage] = useState("");
 
   const handleSend = async () => {
-    await port.write(tx);
+    await port.write(txMessage);
   };
 
-  const update = (v: Uint8Array) => {
-    console.log("RX:", v);
-    setBuf(v.toString());
+  const handleReceive = (v: Uint8Array) => {
+    setRxMessage((prev) => [...prev, new TextDecoder().decode(v)]);
   };
 
   useEffect(() => {
-    port.registerObserver(update);
-    return () => port.removeObserver(update);
+    port.registerObserver(handleReceive);
+    return () => port.removeObserver(handleReceive);
   }, [port]);
 
   return (
     <div className="flex flex-col h-screen gap-2 p-4">
       <ScrollArea className=" rounded-md border w-full flex-grow h-4/5">
-        <MessageBlock type="rx" message={buf} />
-        <MessageBlock type="tx" message={"World00"} />
+        {rxMessage?.map((v, i) => (
+          <MessageBlock key={i} type="rx" message={v} />
+        ))}
       </ScrollArea>
       <div className="flex w-full gap-2 h-1/5">
         <Textarea
-          value={tx}
-          onChange={(e) => setTx(e.target.value)}
+          value={txMessage}
+          onChange={(e) => setTxMessage(e.target.value)}
           placeholder="Send message"
           className="flex-grow resize-none terminal"
         />

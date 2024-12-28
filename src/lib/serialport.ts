@@ -1,4 +1,5 @@
 const RX_BUFFER_SIZE = 1024;
+const RX_TIMEOUT = 10;
 
 type rxCallback = (data: Uint8Array) => void;
 
@@ -16,8 +17,8 @@ export class SerialPort {
     }
   }
 
-  private notifyObservers(data: Uint8Array): void {
-    this.observers.forEach((cb) => cb(data));
+  private notifyObservers(message: Uint8Array): void {
+    this.observers.forEach((cb) => cb(message));
   }
 
   private constructor() {}
@@ -38,8 +39,6 @@ export class SerialPort {
   private port;
   private reader: ReadableStreamDefaultReader | null = null;
   private writer: WritableStreamDefaultWriter | null = null;
-
-  public rxBuffer: Uint8Array[] = [];
 
   public async open(
     baudRate: number,
@@ -104,10 +103,9 @@ export class SerialPort {
 
         timer = setTimeout(() => {
           const msg = buffer.slice(0, count);
-          this.rxBuffer.push(msg);
           this.notifyObservers(msg);
           count = 0;
-        }, 10);
+        }, RX_TIMEOUT);
 
         buffer.set(value, count);
         count += value.length;
