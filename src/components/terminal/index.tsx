@@ -10,8 +10,21 @@ export default function Terminal() {
   const [rxMessage, setRxMessage] = useState<string[]>([]);
   const [txMessage, setTxMessage] = useState("");
 
+  const [script, setScript] = useState(`
+      if (data.length > 10) {
+        return "MAX";
+      }
+      return data;
+  `);
+
   const handleSend = async () => {
-    await port.write(txMessage);
+    try {
+      const userScript = new Function("data", script);
+      const processedData = userScript(txMessage);
+      await port.write(processedData);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleReceive = (v: Uint8Array) => {
