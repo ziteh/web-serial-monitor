@@ -3,33 +3,23 @@ import ConfigSelect from "./config-select";
 import { Button } from "../ui/button";
 
 const baudRateItems = [
-  { value: "9600", label: "9600" },
-  { value: "19200", label: "19200" },
-  { value: "38400", label: "38400" },
-  { value: "57600", label: "57600" },
-  { value: "115200", label: "115200" },
-  { value: "921600", label: "921600" },
+  { value: "9600" },
+  { value: "19200" },
+  { value: "38400" },
+  { value: "57600" },
+  { value: "115200" },
+  { value: "921600" },
 ];
 
-const dataBitsItems = [
-  { value: "5", label: "5" },
-  { value: "6", label: "6" },
-  { value: "7", label: "7" },
-  { value: "8", label: "8" },
-];
+const dataBitsItems = [{ value: "7" }, { value: "8" }];
 
 const parityItems = [
   { value: "none", label: "None" },
   { value: "even", label: "Even" },
   { value: "odd", label: "Odd" },
-  { value: "mark", label: "Mark" },
 ];
 
-const stopBitsItems = [
-  { value: "1", label: "1" },
-  { value: "1.5", label: "1.5" },
-  { value: "2", label: "2" },
-];
+const stopBitsItems = [{ value: "1" }, { value: "2" }];
 
 export default function ConnectionConfig() {
   const [baudRate, setBaudRate] = useState("9600");
@@ -39,7 +29,14 @@ export default function ConnectionConfig() {
 
   const onListPorts = async () => {
     const port = await navigator.serial.requestPort();
-    await port.open({ baudRate: parseInt(baudRate) });
+    await port.open({
+      baudRate: Number(baudRate),
+      dataBits: Number(dataBits),
+      parity,
+      stopBits: Number(stopBits),
+      flowControl: "none",
+      bufferSize: 255,
+    });
     const writer = port.writable.getWriter();
     await writer.write(new Uint8Array([0x01, 0x03, 0x00, 0x00, 0x00]));
 

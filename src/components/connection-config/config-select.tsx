@@ -12,7 +12,7 @@ interface Props {
   onValueChange: (value: string) => void;
   items: {
     value: string;
-    label: string;
+    label?: string;
   }[];
 }
 
@@ -26,7 +26,7 @@ export default function ConfigSelect(props: Props) {
         <SelectGroup>
           {props.items.map((item) => (
             <SelectItem key={item.value} value={item.value}>
-              {item.label}
+              {item.label ?? item.value}
             </SelectItem>
           ))}
         </SelectGroup>
