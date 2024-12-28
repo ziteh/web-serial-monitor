@@ -1,24 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SerialPort } from "@/lib/serialport";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Terminal() {
-  const [port, setPort] = useState(SerialPort.getInstance());
+  const [port] = useState(SerialPort.getInstance());
+  const [buf, setBuf] = useState("");
 
   const handleSend = async () => {
     await port.write("T");
   };
 
+  const update = (v: Uint8Array) => {
+    console.log("RX:", v);
+    setBuf(v.toString());
+  };
+
+  useEffect(() => {
+    port.registerObserver(update);
+    return () => port.removeObserver(update);
+  }, [port]);
+
   return (
     <div className="flex flex-col h-screen gap-2 p-4">
       <Textarea
         readOnly
+        value={buf}
         placeholder="Received message"
         className="w-full flex-grow h-4/5 resize-none terminal"
-      >
-        {port.rxBuffer.toString()}
-      </Textarea>
+      />
       <div className="flex w-full gap-2 h-1/5">
         <Textarea
           placeholder="Send message"

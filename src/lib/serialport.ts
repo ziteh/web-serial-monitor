@@ -1,6 +1,25 @@
 const RX_BUFFER_SIZE = 1024;
 
+type rxCallback = (data: Uint8Array) => void;
+
 export class SerialPort {
+  private observers: rxCallback[] = [];
+
+  public registerObserver(observer: rxCallback): void {
+    this.observers.push(observer);
+  }
+
+  public removeObserver(observer: rxCallback): void {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
+    }
+  }
+
+  private notifyObservers(): void {
+    this.observers.forEach((cb) => cb(this.rxBuffer));
+  }
+
   private constructor() {}
 
   private static instance: SerialPort;
@@ -12,13 +31,13 @@ export class SerialPort {
     return SerialPort.instance;
   }
 
-  public static get isAvailable(): boolean {
+  public static get isSupported(): boolean {
     return "serial" in navigator;
   }
 
   private port;
-  private reader;
-  private writer;
+  private reader: ReadableStreamDefaultReader | null = null;
+  private writer: WritableStreamDefaultWriter | null = null;
 
   public readonly rxBuffer: Uint8Array = new Uint8Array(RX_BUFFER_SIZE);
 
@@ -63,9 +82,11 @@ export class SerialPort {
     await this.writer.write(data);
   }
 
-  private async callback(value: Uint8Array) {}
-
   private async handleReadStream() {
+    if (!this.reader || !this.writer) {
+      throw new Error("Serial port is not open.");
+    }
+
     try {
       while (this.port.readable) {
         const { value, done } = await this.reader.read();
@@ -73,9 +94,8 @@ export class SerialPort {
           break;
         }
 
-        console.log("rx:", value);
         this.rxBuffer.set(value, 0);
-        this.callback(value);
+        this.notifyObservers();
       }
     } catch (err) {
       console.error(err);

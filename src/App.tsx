@@ -4,7 +4,7 @@ import { SerialPort } from "./lib/serialport";
 
 export default function App() {
   useEffect(() => {
-    if (!SerialPort.isAvailable) {
+    if (!SerialPort.isSupported) {
       alert("This browser does not support Web Serial API");
     }
   }, []);
