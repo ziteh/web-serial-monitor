@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SerialPort } from "@/lib/serialport";
+import { SerialPortManager } from "@/lib/serialport";
 import { useEffect, useState } from "react";
 import MessageBlock from "./message-block";
 
 export default function Terminal() {
-  const [port] = useState(SerialPort.getInstance());
+  const [port] = useState(SerialPortManager.getInstance());
   const [rxMessage, setRxMessage] = useState<string[]>([]);
   const [txMessage, setTxMessage] = useState("");
 

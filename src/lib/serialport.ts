@@ -3,7 +3,7 @@ const RX_TIMEOUT = 10;
 
 type rxCallback = (data: Uint8Array) => void;
 
-export class SerialPort {
+export class SerialPortManager {
   private observers: rxCallback[] = [];
 
   public registerObserver(observer: rxCallback): void {
@@ -23,20 +23,24 @@ export class SerialPort {
 
   private constructor() {}
 
-  private static instance: SerialPort;
+  private static instance: SerialPortManager;
 
-  public static getInstance(): SerialPort {
-    if (!SerialPort.instance) {
-      SerialPort.instance = new SerialPort();
+  public static getInstance(): SerialPortManager {
+    if (!SerialPortManager.instance) {
+      SerialPortManager.instance = new SerialPortManager();
     }
-    return SerialPort.instance;
+    return SerialPortManager.instance;
   }
 
   public static get isSupported(): boolean {
     return "serial" in navigator;
   }
 
-  private port;
+  public static get isConnected(): boolean {
+    return this.port && this.port.connected;
+  }
+
+  private port: SerialPort | null = null;
   private reader: ReadableStreamDefaultReader | null = null;
   private writer: WritableStreamDefaultWriter | null = null;
 
