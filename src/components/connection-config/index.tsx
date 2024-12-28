@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import ConfigSelect from "./config-select";
 import { Button } from "../ui/button";
 
@@ -27,7 +27,11 @@ export default function ConnectionConfig() {
   const [parity, setParity] = useState("none");
   const [stopBits, setStopBits] = useState("1");
 
-  const onListPorts = async () => {
+  const [serialPort, setSerialPort] = useState();
+  const [reader, setReader] = useState();
+  const [writer, setWriter] = useState();
+
+  const handleOpenPort = async () => {
     const port = await navigator.serial.requestPort();
     await port.open({
       baudRate: Number(baudRate),
@@ -37,32 +41,50 @@ export default function ConnectionConfig() {
       flowControl: "none",
       bufferSize: 255,
     });
-    const writer = port.writable.getWriter();
-    await writer.write(new Uint8Array([0x01, 0x03, 0x00, 0x00, 0x00]));
 
-    const reader = port.readable.getReader();
+    setSerialPort(port);
+    setReader(port.readable.getReader());
+    setWriter(port.writable.getWriter());
 
-    try {
-      while (true) {
-        const { value, done } = await reader.read();
+    // handleReadStream();
+  };
 
-        if (done) {
-          break;
+  const handleClosePort = async () => {
+    reader.cancel();
+  };
+
+  useEffect(() => {
+    const fn = async () => {
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+
+          if (done) {
+            break;
+          }
+          console.log("rx:", value);
         }
-        console.log("rx:", value);
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      reader.releaseLock();
-    }
 
-    await port.close();
+      reader.releaseLock();
+      await serialPort.close();
+    };
+
+    fn();
+  }, [reader]);
+
+  const handleTest = async () => {
+    console.log("tx: T");
+    await writer.write(new TextEncoder().encode("T"));
   };
 
   return (
     <>
-      <Button onClick={onListPorts}>List Ports</Button>
+      <Button onClick={handleOpenPort}>Open</Button>
+      <Button onClick={handleClosePort}>Close</Button>
+      <Button onClick={handleTest}>T</Button>
       <ConfigSelect
         value={baudRate}
         onValueChange={setBaudRate}
