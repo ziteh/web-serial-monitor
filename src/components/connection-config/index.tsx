@@ -1,6 +1,7 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ConfigSelect from "./config-select";
 import { Button } from "../ui/button";
+import { SerialPort } from "@/lib/serialport";
 
 const baudRateItems = [
   { value: "9600" },
@@ -27,57 +28,20 @@ export default function ConnectionConfig() {
   const [parity, setParity] = useState("none");
   const [stopBits, setStopBits] = useState("1");
 
-  const [serialPort, setSerialPort] = useState();
-  const [reader, setReader] = useState();
-  const [writer, setWriter] = useState();
-
   const handleOpenPort = async () => {
-    const port = await navigator.serial.requestPort();
-    await port.open({
-      baudRate: Number(baudRate),
-      dataBits: Number(dataBits),
-      parity,
-      stopBits: Number(stopBits),
-      flowControl: "none",
-      bufferSize: 255,
-    });
-
-    setSerialPort(port);
-    setReader(port.readable.getReader());
-    setWriter(port.writable.getWriter());
-
-    // handleReadStream();
+    const port = SerialPort.getInstance();
+    port.open(Number(baudRate), Number(dataBits), parity, Number(stopBits));
   };
 
   const handleClosePort = async () => {
-    reader.cancel();
+    const port = SerialPort.getInstance();
+    port.close();
   };
-
-  useEffect(() => {
-    const fn = async () => {
-      try {
-        while (true) {
-          const { value, done } = await reader.read();
-
-          if (done) {
-            break;
-          }
-          console.log("rx:", value);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-
-      reader.releaseLock();
-      await serialPort.close();
-    };
-
-    fn();
-  }, [reader]);
 
   const handleTest = async () => {
     console.log("tx: T");
-    await writer.write(new TextEncoder().encode("T"));
+    const port = SerialPort.getInstance();
+    await port.write("T");
   };
 
   return (
