@@ -16,8 +16,8 @@ export class SerialPort {
     }
   }
 
-  private notifyObservers(): void {
-    this.observers.forEach((cb) => cb(this.rxBuffer));
+  private notifyObservers(data: Uint8Array): void {
+    this.observers.forEach((cb) => cb(data));
   }
 
   private constructor() {}
@@ -39,7 +39,7 @@ export class SerialPort {
   private reader: ReadableStreamDefaultReader | null = null;
   private writer: WritableStreamDefaultWriter | null = null;
 
-  public readonly rxBuffer: Uint8Array = new Uint8Array(RX_BUFFER_SIZE);
+  public rxBuffer: Uint8Array[] = [];
 
   public async open(
     baudRate: number,
@@ -87,6 +87,10 @@ export class SerialPort {
       throw new Error("Serial port is not open.");
     }
 
+    const buffer = new Uint8Array(RX_BUFFER_SIZE);
+    let timer;
+    let count = 0;
+
     try {
       while (this.port.readable) {
         const { value, done } = await this.reader.read();
@@ -94,13 +98,25 @@ export class SerialPort {
           break;
         }
 
-        this.rxBuffer.set(value, 0);
-        this.notifyObservers();
+        if (timer && count > 0) {
+          clearTimeout(timer);
+        }
+
+        timer = setTimeout(() => {
+          const msg = buffer.slice(0, count);
+          this.rxBuffer.push(msg);
+          this.notifyObservers(msg);
+          count = 0;
+        }, 10);
+
+        buffer.set(value, count);
+        count += value.length;
       }
     } catch (err) {
       console.error(err);
     }
 
+    clearTimeout(timer);
     this.reader.releaseLock();
     this.writer.releaseLock();
     await this.port.close();

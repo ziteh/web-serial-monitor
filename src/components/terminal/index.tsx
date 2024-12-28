@@ -8,9 +8,10 @@ import MessageBlock from "./message-block";
 export default function Terminal() {
   const [port] = useState(SerialPort.getInstance());
   const [buf, setBuf] = useState("");
+  const [tx, setTx] = useState("");
 
   const handleSend = async () => {
-    await port.write("T");
+    await port.write(tx);
   };
 
   const update = (v: Uint8Array) => {
@@ -26,11 +27,13 @@ export default function Terminal() {
   return (
     <div className="flex flex-col h-screen gap-2 p-4">
       <ScrollArea className=" rounded-md border w-full flex-grow h-4/5">
-        <MessageBlock type="rx" message={"Hello1112alfkalsdkfjalsdkfjlasdkfjajsl;dkfjals;dkfja;sldfkjas;ldkfjas;ldfa;lksdfja\r\n;lsdkfja;lsdkfja;lskdfja;lsdkfja;lsdkfja;slfkja;sldkf\r\nja;lsdkfja;lsdkfja;sldkfja"} />
+        <MessageBlock type="rx" message={buf} />
         <MessageBlock type="tx" message={"World00"} />
       </ScrollArea>
       <div className="flex w-full gap-2 h-1/5">
         <Textarea
+          value={tx}
+          onChange={(e) => setTx(e.target.value)}
           placeholder="Send message"
           className="flex-grow resize-none terminal"
         />
