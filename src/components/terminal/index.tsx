@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { SerialPort } from "@/lib/serialport";
 import { useEffect, useState } from "react";
+import MessageBlock from "./message-block";
 
 export default function Terminal() {
   const [port] = useState(SerialPort.getInstance());
@@ -23,12 +25,10 @@ export default function Terminal() {
 
   return (
     <div className="flex flex-col h-screen gap-2 p-4">
-      <Textarea
-        readOnly
-        value={buf}
-        placeholder="Received message"
-        className="w-full flex-grow h-4/5 resize-none terminal"
-      />
+      <ScrollArea className=" rounded-md border w-full flex-grow h-4/5">
+        <MessageBlock type="rx" message={"Hello1112alfkalsdkfjalsdkfjlasdkfjajsl;dkfjals;dkfja;sldfkjas;ldkfjas;ldfa;lksdfja\r\n;lsdkfja;lsdkfja;lskdfja;lsdkfja;lsdkfja;slfkja;sldkf\r\nja;lsdkfja;lsdkfja;sldkfja"} />
+        <MessageBlock type="tx" message={"World00"} />
+      </ScrollArea>
       <div className="flex w-full gap-2 h-1/5">
         <Textarea
           placeholder="Send message"

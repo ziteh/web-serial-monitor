@@ -1,0 +1,21 @@
+.message-block {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+
+.message-tx {
+  color: chartreuse;
+}
+
+.message-rx {
+  color: brown;
+}
+
+.message-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

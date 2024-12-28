@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import Terminal from "./components/terminal";
 import { SerialPort } from "./lib/serialport";
+import Terminal from "./components/terminal";
 
 export default function App() {
   useEffect(() => {
