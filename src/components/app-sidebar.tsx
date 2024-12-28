@@ -10,7 +10,9 @@ import ConnectionConfig from "@/components/connection-config";
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader>{__APP_NAME__} {__APP_VERSION__}</SidebarHeader>
+      <SidebarHeader>
+        {__APP_NAME__} {__APP_VERSION__}
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup />
         <ConnectionConfig />
