@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ConfigSelect from "./config-select";
 import { Button } from "../ui/button";
 import { SerialPortManager } from "@/lib/serialport";
