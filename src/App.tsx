@@ -2,10 +2,7 @@ import { useEffect } from "react";
 import { SerialPortManager } from "./lib/serialport";
 import Terminal from "./components/terminal";
 import { useRouter } from "./context/router";
-
-function Page2() {
-  return <div>Page 2</div>;
-}
+import ScriptsPage from "./pages/scripts";
 
 export default function App() {
   const { currentRoute } = useRouter();
@@ -19,7 +16,7 @@ export default function App() {
   return (
     <>
       {currentRoute === "/" && <Terminal />}
-      {currentRoute === "/page2" && <Page2 />}
+      {currentRoute === "/page2" && <ScriptsPage />}
     </>
   );
 }
