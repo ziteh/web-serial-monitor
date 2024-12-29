@@ -21,5 +21,9 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["shadcn", "tabler"]
+  "[markdown]": {
+    "editor.tabSize": 4,
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "cSpell.words": ["Modbus", "shadcn", "tabler"]
 }
