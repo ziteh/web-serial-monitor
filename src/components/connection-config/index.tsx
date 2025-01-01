@@ -27,21 +27,22 @@ export default function ConnectionConfig() {
   const [dataBits, setDataBits] = useState("8");
   const [parity, setParity] = useState("none");
   const [stopBits, setStopBits] = useState("1");
+  const [connection, setConnection] = useState<"Open" | "Close">("Open");
 
-  const handleOpenPort = async () => {
+  const handleConnection = () => {
     const port = SerialPortManager.getInstance();
-    port.open(Number(baudRate), Number(dataBits), parity, Number(stopBits));
-  };
-
-  const handleClosePort = async () => {
-    const port = SerialPortManager.getInstance();
-    port.close();
+    if (port.isConnected) {
+      setConnection("Open");
+      port.close();
+    } else {
+      setConnection("Close");
+      port.open(Number(baudRate), Number(dataBits), parity, Number(stopBits));
+    }
   };
 
   return (
     <>
-      <Button onClick={handleOpenPort}>Open</Button>
-      <Button onClick={handleClosePort}>Close</Button>
+      <Button onClick={handleConnection}>{connection}</Button>
 
       <ConfigSelect
         value={baudRate}

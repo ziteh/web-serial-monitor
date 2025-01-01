@@ -36,7 +36,7 @@ export class SerialPortManager {
     return "serial" in navigator;
   }
 
-  public static get isConnected(): boolean {
+  public get isConnected(): boolean {
     return this.port && this.port.connected;
   }
 
