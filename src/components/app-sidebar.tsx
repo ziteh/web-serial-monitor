@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import ConnectionConfig from "@/components/connection-config";
 import TxConfig from "./tx-config";
+import RxConfig from "./rx-config";
 
 export function AppSidebar() {
   return (
@@ -25,6 +26,10 @@ export function AppSidebar() {
         <SidebarGroup>
           {/* <SidebarGroupLabel>Connection</SidebarGroupLabel> */}
           <ConnectionConfig />
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Rx Config</SidebarGroupLabel>
+          <RxConfig />
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Tx Config</SidebarGroupLabel>
