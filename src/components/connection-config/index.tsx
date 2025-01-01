@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "@/context/router";
 import { SerialPortManager } from "@/lib/serialport";
 import { Button } from "@/components/ui/button";
 import ConfigSelect from "./config-select";
@@ -29,8 +28,6 @@ export default function ConnectionConfig() {
   const [parity, setParity] = useState("none");
   const [stopBits, setStopBits] = useState("1");
 
-  const { navigate } = useRouter();
-
   const handleOpenPort = async () => {
     const port = SerialPortManager.getInstance();
     port.open(Number(baudRate), Number(dataBits), parity, Number(stopBits));
@@ -45,8 +42,6 @@ export default function ConnectionConfig() {
     <>
       <Button onClick={handleOpenPort}>Open</Button>
       <Button onClick={handleClosePort}>Close</Button>
-      <Button onClick={() => navigate("/")}>Go to Page 1</Button>
-      <Button onClick={() => navigate("/page2")}>Go to Page 2</Button>
 
       <ConfigSelect
         value={baudRate}
