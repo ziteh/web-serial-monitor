@@ -60,7 +60,9 @@ export default function Terminal() {
           className="flex-grow resize-none terminal"
         />
         <ScriptEditor onUserScriptChange={(s) => setUserScript(s)}>
-          <Button className="h-full">Script</Button>
+          {/* TODO Button style */}
+          {/* <Button className="h-full">Script</Button> */}
+          <div className="h-full">Script</div>
         </ScriptEditor>
         <Button className="h-full" onClick={handleSend}>
           <svg
