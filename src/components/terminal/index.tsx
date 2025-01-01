@@ -27,10 +27,15 @@ function SendIcon() {
   );
 }
 
+interface Massage {
+  type: "tx" | "rx";
+  message: string;
+}
+
 export default function Terminal() {
   const [port] = useState(SerialPortManager.getInstance());
-  const [rxMessage, setRxMessage] = useState<string[]>([]);
   const [txMessage, setTxMessage] = useState("");
+  const [msgHistory, setMsgHistory] = useState<Massage[]>([]);
   const [userScript, setUserScript] = useState("return raw;");
   const [rxCount, setRxCount] = useState(0);
   const [txCount, setTxCount] = useState(0);
@@ -40,6 +45,7 @@ export default function Terminal() {
       const scriptFunction = new Function("raw", userScript);
       const processedData = scriptFunction(new TextEncoder().encode(txMessage));
       await port.write(processedData);
+      setMsgHistory((prev) => [...prev, { type: "tx", message: txMessage }]);
     } catch (err) {
       console.log(err);
     }
@@ -58,7 +64,8 @@ export default function Terminal() {
     setTxCount(port.txCount);
 
     const handleReceive = (v: Uint8Array) => {
-      setRxMessage((prev) => [...prev, new TextDecoder().decode(v)]);
+      const newMessage = new TextDecoder().decode(v);
+      setMsgHistory((prev) => [...prev, { type: "rx", message: newMessage }]);
       setRxCount(port.rxCount);
     };
 
@@ -69,8 +76,8 @@ export default function Terminal() {
   return (
     <div className="flex flex-col h-screen gap-2 p-4">
       <ScrollArea className=" rounded-md border w-full flex-grow h-3/5">
-        {rxMessage?.map((v, i) => (
-          <MessageBlock key={i} type="rx" message={v} />
+        {msgHistory?.map((m, i) => (
+          <MessageBlock key={i} type={m.type} message={m.message} />
         ))}
       </ScrollArea>
       <div className="flex w-full gap-2 h-1/5">

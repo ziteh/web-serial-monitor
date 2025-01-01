@@ -1,18 +1,18 @@
 .message-block {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  margin: 0;
   border-radius: 0.25rem;
-  font-family: monospace;
+  font-family: "Roboto Mono", monospace;
+  font-size: 0.8rem;
 }
 
 .message-tx {
-  color: chartreuse;
+  color: rgba(14, 116, 144, 0.8);
 }
 
 .message-rx {
-  color: brown;
+  color: unset;
 }
 
 .message-content {

@@ -13,4 +13,6 @@ ignorePaths:
   - .gitignore
   - "*.svg"
 words:
+  - rgba
+  - Roboto
   - tabler
