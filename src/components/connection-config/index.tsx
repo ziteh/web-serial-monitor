@@ -5,11 +5,17 @@ import ConfigSelect from "./config-select";
 
 const baudRateItems = [
   { value: "9600" },
+  { value: "14400" },
   { value: "19200" },
   { value: "38400" },
   { value: "57600" },
   { value: "115200" },
+  { value: "128000" },
+  { value: "230400" },
+  { value: "256000" },
+  { value: "460800" },
   { value: "921600" },
+  { value: "1500000" },
 ];
 
 const dataBitsItems = [{ value: "7" }, { value: "8" }];
