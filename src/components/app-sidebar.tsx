@@ -3,10 +3,12 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import ConnectionConfig from "@/components/connection-config";
 import { Badge } from "@/components/ui/badge";
+import ConnectionConfig from "@/components/connection-config";
+import TxConfig from "./tx-config";
 
 export function AppSidebar() {
   return (
@@ -20,9 +22,14 @@ export function AppSidebar() {
         </span>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup />
-        <ConnectionConfig />
-        <SidebarGroup />
+        <SidebarGroup>
+          {/* <SidebarGroupLabel>Connection</SidebarGroupLabel> */}
+          <ConnectionConfig />
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Tx Config</SidebarGroupLabel>
+          <TxConfig />
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>
