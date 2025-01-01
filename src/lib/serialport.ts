@@ -40,7 +40,7 @@ export class SerialPortManager {
     return this.port && this.port.connected;
   }
 
-  private port: SerialPort | null = null;
+  private port: SerialPort | null = null; // TODO linter type
   private reader: ReadableStreamDefaultReader | null = null;
   private writer: WritableStreamDefaultWriter | null = null;
 

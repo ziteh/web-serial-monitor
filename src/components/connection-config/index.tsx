@@ -1,8 +1,8 @@
 import { useState } from "react";
-import ConfigSelect from "./config-select";
-import { Button } from "../ui/button";
-import { SerialPortManager } from "@/lib/serialport";
 import { useRouter } from "@/context/router";
+import { SerialPortManager } from "@/lib/serialport";
+import { Button } from "@/components/ui/button";
+import ConfigSelect from "./config-select";
 
 const baudRateItems = [
   { value: "9600" },

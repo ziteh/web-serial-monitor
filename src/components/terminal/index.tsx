@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { SerialPortManager } from "@/lib/serialport";
 import { useEffect, useState } from "react";
 import MessageBlock from "./message-block";
-import ScriptEditor from "../script-editor";
+import ScriptEditor from "@/components/script-editor";
 
 export default function Terminal() {
   const [port] = useState(SerialPortManager.getInstance());
@@ -26,11 +26,6 @@ export default function Terminal() {
     setTxCount(port.txCount);
   };
 
-  const handleReceive = (v: Uint8Array) => {
-    setRxMessage((prev) => [...prev, new TextDecoder().decode(v)]);
-    setRxCount(port.rxCount);
-  };
-
   const handleClearCounter = () => {
     port.clearCount();
     setRxCount(0);
@@ -40,6 +35,11 @@ export default function Terminal() {
   useEffect(() => {
     setRxCount(port.rxCount);
     setTxCount(port.txCount);
+
+    const handleReceive = (v: Uint8Array) => {
+      setRxMessage((prev) => [...prev, new TextDecoder().decode(v)]);
+      setRxCount(port.rxCount);
+    };
 
     port.registerObserver(handleReceive);
     return () => port.removeObserver(handleReceive);
