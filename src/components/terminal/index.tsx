@@ -4,23 +4,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { SerialPortManager } from "@/lib/serialport";
 import { useEffect, useState } from "react";
 import MessageBlock from "./message-block";
+import ScriptEditor from "../script-editor";
 
 export default function Terminal() {
   const [port] = useState(SerialPortManager.getInstance());
   const [rxMessage, setRxMessage] = useState<string[]>([]);
   const [txMessage, setTxMessage] = useState("");
-
-  const [script, setScript] = useState(`
-      if (data.length > 10) {
-        return "MAX";
-      }
-      return data;
-  `);
+  const [userScript, setUserScript] = useState("return raw;");
 
   const handleSend = async () => {
     try {
-      const userScript = new Function("data", script);
-      const processedData = userScript(txMessage);
+      const scriptFunction = new Function("raw", userScript);
+      const processedData = scriptFunction(new TextEncoder().encode(txMessage));
       await port.write(processedData);
     } catch (err) {
       console.log(err);
@@ -50,7 +45,10 @@ export default function Terminal() {
           placeholder="Send message"
           className="flex-grow resize-none terminal"
         />
-        <Button className=" h-full" onClick={handleSend}>
+        <ScriptEditor onUserScriptChange={(s) => setUserScript(s)}>
+          <Button className="h-full">Script</Button>
+        </ScriptEditor>
+        <Button className="h-full" onClick={handleSend}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="48"

@@ -10,11 +10,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export default function ScriptEditor() {
+type userScript = (raw: Uint8Array) => Uint8Array;
+
+interface Props {
+  children: React.ReactNode;
+  onUserScriptChange?: (script: string) => void;
+}
+
+export default function ScriptEditor(props: Props) {
   const [testInput, setTestInput] = useState("");
   const [testOutput, setTestOutput] = useState("");
   const [script, setScript] = useState(`
-if (raw[0] === 0x41) {
+if (raw && raw[0] === 0x41) {
   raw[0] = 0x42;
 }
 return raw;
@@ -31,9 +38,14 @@ return raw;
   };
 
   const handleRunScript = async () => {
-    const userScript = new Function("raw", script);
-    const processedData = userScript(new TextEncoder().encode(testInput));
+    const scriptFunction = new Function("raw", script);
+    const input = new TextEncoder().encode(testInput);
+    const processedData = scriptFunction(input);
     setTestOutput(new TextDecoder().decode(processedData));
+
+    if (props.onUserScriptChange) {
+      props.onUserScriptChange(script);
+    }
   };
 
   useEffect(() => {
@@ -46,9 +58,7 @@ return raw;
   return (
     <>
       <Dialog>
-        <DialogTrigger>
-          <Button>Open</Button>
-        </DialogTrigger>
+        <DialogTrigger>{props.children}</DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>User Script Editor</DialogTitle>
