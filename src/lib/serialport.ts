@@ -40,9 +40,25 @@ export class SerialPortManager {
     return this.port && this.port.connected;
   }
 
-  private port: SerialPort | null = null;
+  private port: SerialPort | null = null; // TODO linter type
   private reader: ReadableStreamDefaultReader | null = null;
   private writer: WritableStreamDefaultWriter | null = null;
+
+  private _rxCount: number = 0;
+  private _txCount: number = 0;
+
+  public get rxCount(): number {
+    return this._rxCount;
+  }
+
+  public get txCount(): number {
+    return this._txCount;
+  }
+
+  public clearCount() {
+    this._rxCount = 0;
+    this._txCount = 0;
+  }
 
   public async open(
     baudRate: number,
@@ -82,6 +98,8 @@ export class SerialPortManager {
     if (typeof data === "string") {
       data = new TextEncoder().encode(data);
     }
+
+    this._txCount += data.length;
     await this.writer.write(data);
   }
 
@@ -108,6 +126,7 @@ export class SerialPortManager {
         timer = setTimeout(() => {
           const msg = buffer.slice(0, count);
           this.notifyObservers(msg);
+          this._rxCount += count;
           count = 0;
         }, RX_TIMEOUT);
 

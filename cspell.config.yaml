@@ -1,0 +1,16 @@
+$schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
+version: "0.2"
+ignorePaths:
+  - .vscode
+  - .husky
+  - node_modules
+  - dist
+  - dist-electron
+  - release
+  - package.json
+  - package-lock.json
+  - pnpm-lock.yaml
+  - .gitignore
+  - "*.svg"
+words:
+  - tabler

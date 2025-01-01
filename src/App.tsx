@@ -1,8 +1,12 @@
 import { useEffect } from "react";
+import { useRouter } from "./context/router";
 import { SerialPortManager } from "./lib/serialport";
-import Terminal from "./components/terminal";
+import ScriptsPage from "./pages/scripts";
+import TerminalPage from "./pages/terminal";
 
 export default function App() {
+  const { currentRoute } = useRouter();
+
   useEffect(() => {
     if (!SerialPortManager.isSupported) {
       alert("This browser does not support Web Serial API");
@@ -11,7 +15,8 @@ export default function App() {
 
   return (
     <>
-      <Terminal />
+      {currentRoute === "/" && <TerminalPage />}
+      {currentRoute === "/page2" && <ScriptsPage />}
     </>
   );
 }
