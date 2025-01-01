@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SerialPortManager } from "@/lib/serialport";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import ConfigSelect from "./config-select";
 
 const baudRateItems = [
@@ -48,28 +49,45 @@ export default function ConnectionConfig() {
 
   return (
     <>
-      <Button onClick={handleConnection}>{connection}</Button>
+      <div className="flex flex-col gap-4 m-4">
+        <Button onClick={handleConnection}>{connection}</Button>
 
-      <ConfigSelect
-        value={baudRate}
-        onValueChange={setBaudRate}
-        items={baudRateItems}
-      />
-      <ConfigSelect
-        value={dataBits}
-        onValueChange={setDataBits}
-        items={dataBitsItems}
-      />
-      <ConfigSelect
-        value={parity}
-        onValueChange={setParity}
-        items={parityItems}
-      />
-      <ConfigSelect
-        value={stopBits}
-        onValueChange={setStopBits}
-        items={stopBitsItems}
-      />
+        <div className="flex flex-col gap-2">
+          <Label>Baud Rate</Label>
+          <ConfigSelect
+            value={baudRate}
+            onValueChange={setBaudRate}
+            items={baudRateItems}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label>Data Bits</Label>
+          <ConfigSelect
+            value={dataBits}
+            onValueChange={setDataBits}
+            items={dataBitsItems}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label>Parity</Label>
+          <ConfigSelect
+            value={parity}
+            onValueChange={setParity}
+            items={parityItems}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label>Stop Bits</Label>
+          <ConfigSelect
+            value={stopBits}
+            onValueChange={setStopBits}
+            items={stopBitsItems}
+          />
+        </div>
+      </div>
     </>
   );
 }

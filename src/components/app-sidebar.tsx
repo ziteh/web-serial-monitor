@@ -6,12 +6,18 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import ConnectionConfig from "@/components/connection-config";
+import { Badge } from "@/components/ui/badge";
 
 export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        {__APP_NAME__} {__APP_VERSION__}
+        <span className="m-2">
+          {__APP_NAME__}
+          <Badge variant="secondary" className="ml-2 px-1 terminal">
+            v{__APP_VERSION__}
+          </Badge>
+        </span>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup />

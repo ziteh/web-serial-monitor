@@ -19,7 +19,7 @@ interface Props {
 export default function ConfigSelect(props: Props) {
   return (
     <Select value={props.value} onValueChange={props.onValueChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
