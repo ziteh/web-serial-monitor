@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,25 +31,24 @@ result[raw.length] = checksum;
 return result;
 `);
 
-  const handleSaveScript = async () => {
-    const userScript = new Function("raw", script);
-    if (typeof userScript !== "function") {
-      alert("Invalid script");
-      return;
-    }
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  const handleSaveScript = () => {
     localStorage.setItem("script", script);
-  };
-
-  const handleRunScript = async () => {
-    const scriptFunction = new Function("raw", script);
-    const input = new TextEncoder().encode(testInput);
-    const processedData = scriptFunction(input);
-    setTestOutput(new TextDecoder().decode(processedData));
-
     if (props.onUserScriptChange) {
       props.onUserScriptChange(script);
     }
+  };
+
+  const handleRunScript = () => {
+    if (!iframeRef.current) return;
+
+    // Send test data and script
+    const encodedInput = new TextEncoder().encode(testInput);
+    iframeRef.current.contentWindow?.postMessage(
+      { script, input: encodedInput },
+      "*",
+    );
   };
 
   useEffect(() => {
@@ -57,6 +56,20 @@ return result;
     if (savedScript) {
       setScript(savedScript);
     }
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === "result") {
+        try {
+          const decodedOutput = new TextDecoder().decode(event.data.output);
+          setTestOutput(decodedOutput);
+        } catch (err) {
+          setTestOutput(`Error decoding output. ${err}`);
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   return (
@@ -79,6 +92,27 @@ return result;
           <Input placeholder="Output" value={testOutput} readOnly />
           <Button onClick={handleRunScript}>Test</Button>
           <Button onClick={handleSaveScript}>Save</Button>
+
+          {/* Sandboxed iframe */}
+          <iframe
+            ref={iframeRef}
+            sandbox="allow-scripts"
+            srcDoc={`
+              <script>
+                window.addEventListener('message', (event) => {
+                  const { script, input } = event.data;
+                  try {
+                    const userFunction = new Function('raw', script);
+                    const result = userFunction(new Uint8Array(input));
+                    parent.postMessage({ type: 'result', output: result }, '*');
+                  } catch (error) {
+                    parent.postMessage({ type: 'result', output: 'Error: ' + error.message }, '*');
+                  }
+                });
+              </script>
+            `}
+            style={{ display: "none" }}
+          />
         </DialogContent>
       </Dialog>
     </>
