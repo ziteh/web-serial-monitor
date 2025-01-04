@@ -18,7 +18,7 @@ export function AppSidebar() {
         <span className="m-2">
           {__APP_NAME__}
           <Badge variant="secondary" className="ml-2 px-1 terminal">
-            v{__APP_VERSION__}
+            v{__APP_VERSION__} 🚧
           </Badge>
         </span>
       </SidebarHeader>
