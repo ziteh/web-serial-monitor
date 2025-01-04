@@ -10,16 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-interface Props {
-  children: React.ReactNode;
-  onUserScriptChange?: (script: string) => void;
-}
-
-export default function ScriptEditor(props: Props) {
-  const [testInput, setTestInput] = useState("");
-  const [testOutput, setTestOutput] = useState("");
-  const [script, setScript] = useState(`
-// JavaScript
+const defaultScript = `// JavaScript
 // "raw" is type of "Uint8Array"
 
 const checksum = raw.reduce((sum, val) => (sum + val) & 0xFF, 0);
@@ -29,7 +20,17 @@ result.set(raw);
 result[raw.length] = checksum;
 
 return result;
-`);
+`;
+
+interface Props {
+  children: React.ReactNode;
+  onUserScriptChange?: (script: string) => void;
+}
+
+export default function ScriptEditor(props: Props) {
+  const [testInput, setTestInput] = useState("");
+  const [testOutput, setTestOutput] = useState("");
+  const [script, setScript] = useState(defaultScript);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -49,6 +50,11 @@ return result;
       { script, input: encodedInput },
       "*",
     );
+  };
+
+  const handleResetUserScript = () => {
+    setScript(defaultScript);
+    localStorage.setItem("script", defaultScript);
   };
 
   useEffect(() => {
@@ -83,7 +89,7 @@ return result;
           <Textarea
             value={script}
             onChange={(e) => setScript(e.target.value)}
-            className="terminal"
+            className="terminal min-h-64"
           />
           <Input
             placeholder="Input"
@@ -92,6 +98,7 @@ return result;
           <Input placeholder="Output" value={testOutput} readOnly />
           <Button onClick={handleRunScript}>Test</Button>
           <Button onClick={handleSaveScript}>Save</Button>
+          <Button onClick={handleResetUserScript}>Reset</Button>
 
           {/* Sandboxed iframe */}
           <iframe
