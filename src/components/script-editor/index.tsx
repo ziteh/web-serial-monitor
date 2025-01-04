@@ -19,10 +19,16 @@ export default function ScriptEditor(props: Props) {
   const [testInput, setTestInput] = useState("");
   const [testOutput, setTestOutput] = useState("");
   const [script, setScript] = useState(`
-if (raw && raw[0] === 0x41) {
-  raw[0] = 0x42;
-}
-return raw;
+// JavaScript
+// "raw" is type of "Uint8Array"
+
+const checksum = raw.reduce((sum, val) => (sum + val) & 0xFF, 0);
+
+const result = new Uint8Array(raw.length + 1);
+result.set(raw);
+result[raw.length] = checksum;
+
+return result;
 `);
 
   const handleSaveScript = async () => {
