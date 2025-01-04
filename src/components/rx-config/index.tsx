@@ -23,7 +23,7 @@ export default function RxConfig() {
         <Label className="text-sm">Script</Label>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
         <Label>Color</Label>
         <Select value="unset">
           <SelectTrigger className="w-1/2">
@@ -39,7 +39,7 @@ export default function RxConfig() {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
         <Label>Newline</Label>
         <Select value="\n">
           <SelectTrigger className="w-1/2">
@@ -54,12 +54,12 @@ export default function RxConfig() {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center justify-between">
-        <Label>Break</Label>
-        <Input className="w-1/2" type="number" />
+      <div className="flex items-center justify-between mb-2">
+        <Label>Break ms</Label>
+        <Input className="w-1/2" type="number" value="10" />
       </div>
 
-      <div>
+      <div className="flex items-center justify-end gap-2">
         <Button variant="secondary">Pause</Button>
         <Button variant="secondary">Clear</Button>
       </div>
