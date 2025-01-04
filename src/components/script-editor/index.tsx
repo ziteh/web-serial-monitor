@@ -81,7 +81,7 @@ export default function ScriptEditor(props: Props) {
   return (
     <>
       <Dialog>
-        <DialogTrigger>{props.children}</DialogTrigger>
+        <DialogTrigger asChild>{props.children}</DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>User Script Editor</DialogTitle>
