@@ -40,7 +40,11 @@ export class SerialPortManager {
     return this.port && this.port.connected;
   }
 
-  private port: SerialPort | null = null; // TODO linter type
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  private port: SerialPort | null = null;
+
   private reader: ReadableStreamDefaultReader | null = null;
   private writer: WritableStreamDefaultWriter | null = null;
 
